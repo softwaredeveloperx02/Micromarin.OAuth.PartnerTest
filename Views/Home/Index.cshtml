@@ -37,23 +37,27 @@
                     <div class="col-md-6 pl-0 p-4 p-md-3">
                         <h1 class="display-4 display-sm-2 mt-3 font-weight-bold text-center">Login</h1>
                         <div class="d-flex justify-content-center align-items-center mt-md-4 mt-3">
-                            <form class="web-user-form w-100 px-2 px-md-4" novalidate>
+                            <form class="web-user-form w-100 px-2 px-md-4" asp-action="DemoLogin" asp-controller="Home" method="post" novalidate>
+                                @if (TempData["LoginError"] is string loginError && !string.IsNullOrWhiteSpace(loginError))
+                                {
+                                    <div class="alert alert-danger py-2" role="alert">@loginError</div>
+                                }
                                 <div class="form-group mb-3">
                                     <label class="ml-1" for="email">Email</label>
-                                    <input id="email" type="email" class="form-control" placeholder="Enter Email" tabindex="1" disabled />
+                                    <input id="email" name="email" type="text" class="form-control" placeholder="Enter Email" tabindex="1" required />
                                 </div>
                                 <div class="form-group mb-3">
                                     <label class="ml-1" for="password">Password</label>
-                                    <input id="password" type="password" class="form-control" placeholder="Enter Password" tabindex="2" disabled />
+                                    <input id="password" name="password" type="password" class="form-control" placeholder="Enter Password" tabindex="2" required />
                                 </div>
                                 <div class="form-group ml-1 mb-3">
                                     <div class="custom-control custom-checkbox">
-                                        <input type="checkbox" class="custom-control-input" tabindex="3" id="remember" disabled />
+                                        <input type="checkbox" class="custom-control-input" tabindex="3" id="remember" />
                                         <label class="custom-control-label" for="remember">Remember Me</label>
                                     </div>
                                 </div>
                                 <div class="form-group mb-2">
-                                    <button type="button" class="btn btn-primary btn-lg btn-block btn-submit w-100" tabindex="4" disabled>Login</button>
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block btn-submit w-100" tabindex="4">Login</button>
                                 </div>
                                 <div class="form-group social-login-buttons row mt-2">
                                     <div class="col-12">
