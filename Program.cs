@@ -8,7 +8,7 @@ builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>
     options.ForwardedHeaders =
         Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
         Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
-    options.KnownIPNetworks.Clear();
+    options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
 });
 builder.Services.AddDistributedMemoryCache();
