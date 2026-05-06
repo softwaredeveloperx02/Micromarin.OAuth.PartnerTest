@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: micromarin-oauth-partner-ui
+    runtime: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: PartnerOAuth__IdentityIssuerBaseUrl
+        sync: false
+      - key: PartnerOAuth__ClientId
+        sync: false
+      - key: PartnerOAuth__ClientSecret
+        sync: false
+      - key: PartnerOAuth__CallbackPath
+        value: /oauth/callback
+      - key: PartnerOAuth__Scope
+        value: openid profile

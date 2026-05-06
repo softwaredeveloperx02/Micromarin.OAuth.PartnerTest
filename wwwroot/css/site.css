@@ -1,0 +1,407 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* Maritime Matrix–style partner login (demo) — see https://maritimematrix.vercel.app/login */
+.mm-auth-body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #e8eef5 0%, #f2f5f9 40%, #eef1f6 100%);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.mm-auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+}
+
+.mm-auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(15, 37, 71, 0.08), 0 1px 4px rgba(15, 37, 71, 0.04);
+  border: 1px solid rgba(15, 37, 71, 0.06);
+  padding: 2.25rem 2rem 2rem;
+}
+
+.mm-auth-logo {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f2547;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.75rem;
+}
+
+.mm-auth-title {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: #0f2547;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.75rem;
+  line-height: 1.25;
+}
+
+.mm-auth-trial {
+  font-size: 0.9375rem;
+  color: #4a5d78;
+  margin-bottom: 1.5rem;
+  line-height: 1.45;
+}
+
+.mm-auth-link {
+  color: #1565c0;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.mm-auth-link:hover {
+  text-decoration: underline;
+}
+
+.btn-mm-micromarin {
+  --bs-btn-bg: #0d47a1;
+  --bs-btn-border-color: #0d47a1;
+  --bs-btn-hover-bg: #0a3d8a;
+  --bs-btn-hover-border-color: #0a3d8a;
+  --bs-btn-active-bg: #083470;
+  --bs-btn-active-border-color: #083470;
+  font-weight: 600;
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+  border-radius: 8px;
+}
+
+.mm-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0 1.25rem;
+  color: #8a9aae;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.mm-auth-divider::before,
+.mm-auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #dde3eb;
+}
+
+.mm-auth-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.35rem;
+}
+
+.mm-auth-input {
+  border-radius: 8px;
+  border-color: #cfd8e3;
+  padding: 0.6rem 0.85rem;
+}
+
+.mm-auth-input:disabled {
+  background-color: #f8fafc;
+  opacity: 1;
+  color: #6c757d;
+}
+
+.btn-mm-primary {
+  background: #1565c0;
+  border-color: #1565c0;
+  font-weight: 600;
+  padding-top: 0.65rem;
+  padding-bottom: 0.65rem;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.btn-mm-primary:hover:not(:disabled) {
+  background: #0d47a1;
+  border-color: #0d47a1;
+  color: #fff;
+}
+
+.btn-mm-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.mm-auth-hint {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+/* support.mathreex.com/login inspired layout */
+.support-login-body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f1f4f8;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.support-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.support-card {
+  width: 100%;
+  max-width: 430px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.5rem 1.5rem 1.75rem;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
+}
+
+.support-brand {
+  margin-bottom: 1.25rem;
+}
+
+.support-logo {
+  max-width: 180px;
+  height: auto;
+  margin-bottom: 0.75rem;
+}
+
+.support-nav {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
+.support-nav a {
+  text-decoration: none;
+  color: #495057;
+}
+
+.support-nav a.active {
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.support-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1f2d3d;
+  margin-bottom: 1rem;
+}
+
+.btn-micromarin {
+  --bs-btn-bg: #0d47a1;
+  --bs-btn-border-color: #0d47a1;
+  --bs-btn-hover-bg: #083d8c;
+  --bs-btn-hover-border-color: #083d8c;
+  --bs-btn-active-bg: #072f6c;
+  --bs-btn-active-border-color: #072f6c;
+  color: #fff;
+  font-weight: 600;
+}
+
+.support-label {
+  font-size: 0.9rem;
+  margin-bottom: 0.35rem;
+  color: #1f2937;
+}
+
+.support-input {
+  border-radius: 6px;
+  border-color: #cfd6de;
+  min-height: 42px;
+}
+
+.support-input:disabled {
+  opacity: 1;
+  background: #f8fafc;
+}
+
+.support-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.support-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.btn-login {
+  background: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-login:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.support-forgot {
+  display: inline-block;
+  margin-top: 0.75rem;
+  color: #0d6efd;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+/* support.mathreex.com login style */
+.support-login-body {
+  margin: 0;
+  min-height: 100vh;
+  background: #f4f6f9;
+  font-family: "Montserrat", sans-serif;
+}
+
+.mm-main-navbar {
+  background: #fff;
+  border-bottom: 1px solid #e9ecef;
+  min-height: 74px;
+  padding: 0.25rem 1rem;
+}
+
+.mm-navbar-img {
+  max-height: 48px;
+  width: auto;
+}
+
+.mm-main-navbar .nav-link {
+  color: #3e4b5b;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.mm-main-navbar .nav-item.active .nav-link {
+  color: #0d6efd;
+}
+
+.main-section-area {
+  padding-top: 0.5rem;
+}
+
+.mm-login-wrap {
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.mm-login-side {
+  object-fit: cover;
+  min-height: 560px;
+}
+
+.web-user-form .form-control {
+  min-height: 44px;
+}
+
+.web-user-form .form-control:disabled {
+  background: #f8fafc;
+}
+
+.btn-mm-micromarin {
+  background: #072f6c;
+  border-color: #072f6c;
+  color: #fff;
+  font-weight: 600;
+}
+
+.btn-mm-micromarin:hover {
+  background: #0a3d8a;
+  border-color: #0a3d8a;
+  color: #fff;
+}
+
+.footer-section {
+  background: #fff;
+  padding: 2rem 1rem;
+  margin-top: 2rem;
+}
+
+.footer-container {
+  position: relative;
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.footer-logo img {
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+}
+
+.footer-subsection-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+.footer-subsection-text,
+.footer-subsection-list {
+  font-size: 0.92rem;
+  color: #4f5b67;
+  line-height: 1.6;
+}
+
+.footer-img-left,
+.footer-img-right {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.65;
+  top: 8px;
+}
+
+.footer-img-left {
+  left: -10px;
+}
+
+.footer-img-right {
+  right: -10px;
+}

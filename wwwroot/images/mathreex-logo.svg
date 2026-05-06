@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="48" viewBox="0 0 220 48" fill="none">
+  <rect x="1" y="1" width="46" height="46" rx="10" fill="#0b5ed7"/>
+  <path d="M13 33V14h6.3l4.2 10.8L27.7 14H34v19h-4.7V21.3l-4.1 10h-3.5l-4.1-10V33H13z" fill="white"/>
+  <text x="58" y="21" font-family="Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#1f2d3d">Mathreex</text>
+  <text x="58" y="37" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="500" fill="#5b6b7a">Support Center</text>
+</svg>
