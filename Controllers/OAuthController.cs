@@ -43,6 +43,9 @@ public class OAuthController : Controller
         string? account_id,
         string? client_id,
         string? ts,
+        string? first_name,
+        string? last_name,
+        string? company_name,
         string? sig)
     {
         if (!string.Equals(sso_status, "success", StringComparison.Ordinal))
@@ -56,7 +59,10 @@ public class OAuthController : Controller
             return View("OAuthResult", new OAuthResultVm { Success = false, Message = "Required callback parameters are missing." });
         }
 
-        var payload = $"{account_id}.{client_id}.{ts}";
+        var first = first_name ?? string.Empty;
+        var last = last_name ?? string.Empty;
+        var company = company_name ?? string.Empty;
+        var payload = $"{account_id}.{client_id}.{ts}.{first}.{last}.{company}";
         var expected = ComputeSignature(payload, _oauth.ClientSecret ?? string.Empty);
         if (!CryptographicOperations.FixedTimeEquals(
             Encoding.UTF8.GetBytes(expected),
@@ -75,11 +81,19 @@ public class OAuthController : Controller
             return View("OAuthResult", new OAuthResultVm { Success = false, Message = "Callback link expired." });
         }
 
-        return View("OAuthResult", new OAuthResultVm
+        var profile = new UserProfileVm
         {
-            Success = true,
-            Message = "Sign-in succeeded with Micromarin."
-        });
+            FirstName = string.IsNullOrWhiteSpace(first) ? "—" : first,
+            LastName = string.IsNullOrWhiteSpace(last) ? "—" : last,
+            CompanyName = string.IsNullOrWhiteSpace(company) ? "Micromarin user" : company,
+            LoginSource = "Micromarin SSO",
+            Email = null,
+            AccountId = account_id
+        };
+
+        HttpContext.Session.SetString("UserProfile", System.Text.Json.JsonSerializer.Serialize(profile));
+
+        return RedirectToAction("Profile", "Home");
     }
 
     private static string ComputeSignature(string payload, string secret)

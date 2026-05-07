@@ -6,6 +6,8 @@ namespace Micromarin.OAuth.PartnerTest.Controllers;
 
 public class HomeController : Controller
 {
+    private const string ProfileSessionKey = "UserProfile";
+
     public IActionResult Index()
     {
         return View();
@@ -17,7 +19,21 @@ public class HomeController : Controller
         if (string.Equals(email, "Admin", StringComparison.Ordinal) &&
             string.Equals(password, "Admin", StringComparison.Ordinal))
         {
-            return RedirectToAction(nameof(DemoWelcome), new { username = email });
+            var profile = new UserProfileVm
+            {
+                FirstName = "Demo",
+                LastName = "Admin",
+                CompanyName = "Partner Test Co.",
+                LoginSource = "Local demo login",
+                Email = "admin@partner.test",
+                AccountId = null
+            };
+
+            HttpContext.Session.SetString(
+                ProfileSessionKey,
+                System.Text.Json.JsonSerializer.Serialize(profile));
+
+            return RedirectToAction(nameof(Profile));
         }
 
         TempData["LoginError"] = "Kullanıcı adı veya şifre yanlış";
@@ -25,10 +41,24 @@ public class HomeController : Controller
     }
 
     [HttpGet]
-    public IActionResult DemoWelcome(string username)
+    public IActionResult Profile()
     {
-        ViewBag.Username = string.IsNullOrWhiteSpace(username) ? "Kullanıcı Adı" : username;
-        return View();
+        var raw = HttpContext.Session.GetString(ProfileSessionKey);
+
+        if (string.IsNullOrWhiteSpace(raw))
+            return RedirectToAction(nameof(Index));
+
+        var profile = System.Text.Json.JsonSerializer.Deserialize<UserProfileVm>(raw)
+                      ?? new UserProfileVm();
+
+        return View(profile);
+    }
+
+    [HttpPost]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Remove(ProfileSessionKey);
+        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Privacy()
