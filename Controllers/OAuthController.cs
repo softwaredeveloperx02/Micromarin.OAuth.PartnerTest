@@ -24,7 +24,7 @@ public class OAuthController : Controller
 
         var callbackUrl = $"{Request.Scheme}://{Request.Host}{_oauth.CallbackPath}";
 
-        var issuer = _oauth.IdentityIssuerBaseUrl.TrimEnd('/');
+        var issuer = "https://developer-application-identity.azurewebsites.net/";// _oauth.IdentityIssuerBaseUrl.TrimEnd('/');
         var pairs = new List<KeyValuePair<string, string?>>
         {
             new("partner_client_id", _oauth.ClientId),
