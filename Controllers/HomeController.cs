@@ -23,10 +23,12 @@ public class HomeController : Controller
             {
                 FirstName = "Demo",
                 LastName = "Admin",
+                UserName = "admin",
                 CompanyName = "Partner Test Co.",
+                CompanyTitle = "Administrator",
                 LoginSource = "Local demo login",
                 Email = "admin@partner.test",
-                AccountId = null
+                PartnerSub = null
             };
 
             HttpContext.Session.SetString(

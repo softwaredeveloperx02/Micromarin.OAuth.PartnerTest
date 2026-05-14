@@ -176,10 +176,24 @@
                     <span class="label">Soyad</span>
                     <span class="value">@Model.LastName</span>
                 </li>
+                @if (!string.IsNullOrWhiteSpace(Model.UserName))
+                {
+                    <li>
+                        <span class="label">Kullanıcı adı</span>
+                        <span class="value">@Model.UserName</span>
+                    </li>
+                }
                 <li>
                     <span class="label">Şirket</span>
                     <span class="value">@Model.CompanyName</span>
                 </li>
+                @if (!string.IsNullOrWhiteSpace(Model.CompanyTitle))
+                {
+                    <li>
+                        <span class="label">Ünvan</span>
+                        <span class="value">@Model.CompanyTitle</span>
+                    </li>
+                }
                 @if (!string.IsNullOrWhiteSpace(Model.Email))
                 {
                     <li>
@@ -187,11 +201,11 @@
                         <span class="value">@Model.Email</span>
                     </li>
                 }
-                @if (!string.IsNullOrWhiteSpace(Model.AccountId))
+                @if (!string.IsNullOrWhiteSpace(Model.PartnerSub))
                 {
                     <li>
-                        <span class="label">Account ID</span>
-                        <span class="value" style="font-family:monospace; font-size:12px;">@Model.AccountId</span>
+                        <span class="label" title="Micromarin tarafından partner'a özel üretilmiş opaque ID. AccountID GUID'i DEĞİLDİR; partner'lar arasında farklı değer alır.">Partner Sub</span>
+                        <span class="value" style="font-family:monospace; font-size:12px;">@Model.PartnerSub</span>
                     </li>
                 }
             </ul>

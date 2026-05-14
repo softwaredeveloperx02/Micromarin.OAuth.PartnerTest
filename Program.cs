@@ -1,4 +1,6 @@
 using Micromarin.OAuth.PartnerTest.Models;
+using Microsoft.IdentityModel.Protocols;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,12 +13,37 @@ builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
 });
+
+builder.Services.AddSingleton<IConfigurationManager<OpenIdConnectConfiguration>>(sp =>
+{
+    var oauth = builder.Configuration.GetSection("PartnerOAuth").Get<PartnerOAuthOptions>()
+                ?? new PartnerOAuthOptions();
+
+    var discoveryUri = !string.IsNullOrWhiteSpace(oauth.DiscoveryUri)
+        ? oauth.DiscoveryUri
+        : oauth.IdentityIssuerBaseUrl.TrimEnd('/') + "/.well-known/openid-configuration";
+
+    var retriever = new OpenIdConnectConfigurationRetriever();
+    var http = new HttpDocumentRetriever { RequireHttps = false };
+    return new ConfigurationManager<OpenIdConnectConfiguration>(discoveryUri, retriever, http)
+    {
+        AutomaticRefreshInterval = TimeSpan.FromHours(24),
+        RefreshInterval = TimeSpan.FromMinutes(5)
+    };
+});
+
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(20);
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+});
+
+builder.Services.AddHttpClient("identity", c =>
+{
+    c.DefaultRequestHeaders.Accept.Add(
+        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 });
 
 builder.Services.AddControllersWithViews();
