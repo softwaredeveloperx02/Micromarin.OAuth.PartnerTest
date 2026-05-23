@@ -8,13 +8,11 @@ services:
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
-      - key: PartnerOAuth__IdentityIssuerBaseUrl
+      - key: ClientCredentials__Authority
         sync: false
-      - key: PartnerOAuth__ClientId
+      - key: ClientCredentials__ClientId
         sync: false
-      - key: PartnerOAuth__ClientSecret
+      - key: ClientCredentials__ClientSecret
         sync: false
-      - key: PartnerOAuth__CallbackPath
-        value: /oauth/callback
-      - key: PartnerOAuth__Scope
-        value: openid profile
+      - key: ClientCredentials__PostLogoutRedirectUri
+        sync: false

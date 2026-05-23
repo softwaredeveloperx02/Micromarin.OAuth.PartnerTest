@@ -1,4 +1,9 @@
 using System.Diagnostics;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Micromarin.OAuth.PartnerTest.Models;
 
@@ -6,34 +11,50 @@ namespace Micromarin.OAuth.PartnerTest.Controllers;
 
 public class HomeController : Controller
 {
-    private const string ProfileSessionKey = "UserProfile";
-
-    public IActionResult Index()
+    public IActionResult Index(string denied, string ssoError)
     {
+        if (User.Identity?.IsAuthenticated == true)
+            return RedirectToAction(nameof(Profile));
+
+        if (string.Equals(denied, "1", StringComparison.Ordinal))
+            ViewBag.SsoCancelled = true;
+        else if (string.Equals(ssoError, "1", StringComparison.Ordinal))
+            ViewBag.SsoError = true;
+
         return View();
     }
 
+    [HttpGet("/login/micromarin")]
+    public IActionResult LoginWithMicromarin()
+    {
+        return Challenge(
+            new AuthenticationProperties { RedirectUri = Url.Action(nameof(Profile)) },
+            OpenIdConnectDefaults.AuthenticationScheme);
+    }
+
     [HttpPost]
-    public IActionResult DemoLogin(string email, string password)
+    public async Task<IActionResult> DemoLogin(string email, string password)
     {
         if (string.Equals(email, "Admin", StringComparison.Ordinal) &&
             string.Equals(password, "Admin", StringComparison.Ordinal))
         {
-            var profile = new UserProfileVm
+            var claims = new List<Claim>
             {
-                FirstName = "Demo",
-                LastName = "Admin",
-                UserName = "admin",
-                CompanyName = "Partner Test Co.",
-                CompanyTitle = "Administrator",
-                LoginSource = "Local demo login",
-                Email = "admin@partner.test",
-                PartnerSub = null
+                new(ClaimTypes.NameIdentifier, "demo-admin"),
+                new(ClaimTypes.GivenName, "Demo"),
+                new(ClaimTypes.Surname, "Admin"),
+                new("preferred_username", "admin"),
+                new("company_name", "Partner Test Co."),
+                new("company_title", "Administrator"),
+                new("login_source", "Local demo login"),
+                new(ClaimTypes.Email, "admin@partner.test"),
             };
 
-            HttpContext.Session.SetString(
-                ProfileSessionKey,
-                System.Text.Json.JsonSerializer.Serialize(profile));
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                new ClaimsPrincipal(identity),
+                new AuthenticationProperties { IsPersistent = true });
 
             return RedirectToAction(nameof(Profile));
         }
@@ -42,24 +63,20 @@ public class HomeController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize]
     [HttpGet]
     public IActionResult Profile()
     {
-        var raw = HttpContext.Session.GetString(ProfileSessionKey);
-
-        if (string.IsNullOrWhiteSpace(raw))
-            return RedirectToAction(nameof(Index));
-
-        var profile = System.Text.Json.JsonSerializer.Deserialize<UserProfileVm>(raw)
-                      ?? new UserProfileVm();
-
+        var profile = UserProfileVm.FromClaims(User);
         return View(profile);
     }
 
+    [Authorize]
     [HttpPost]
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
-        HttpContext.Session.Remove(ProfileSessionKey);
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await HttpContext.SignOutAsync(OpenIdConnectDefaults.AuthenticationScheme);
         return RedirectToAction(nameof(Index));
     }
 

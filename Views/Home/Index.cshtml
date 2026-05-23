@@ -42,6 +42,14 @@
                                 {
                                     <div class="alert alert-danger py-2" role="alert">@loginError</div>
                                 }
+                                @if (ViewBag.SsoCancelled == true)
+                                {
+                                    <div class="alert alert-warning py-2" role="alert">Micromarin girişi iptal edildi. İsterseniz tekrar deneyebilirsiniz.</div>
+                                }
+                                @if (ViewBag.SsoError == true)
+                                {
+                                    <div class="alert alert-danger py-2" role="alert">Micromarin ile giriş tamamlanamadı. Lütfen tekrar deneyin.</div>
+                                }
                                 <div class="form-group mb-3">
                                     <label class="ml-1" for="email">Email</label>
                                     <input id="email" name="email" type="text" class="form-control" placeholder="Enter Email" tabindex="1" required />

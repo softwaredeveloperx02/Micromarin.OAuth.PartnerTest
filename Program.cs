@@ -1,51 +1,108 @@
+using System.Security.Claims;
 using Micromarin.OAuth.PartnerTest.Models;
-using Microsoft.IdentityModel.Protocols;
-using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Micromarin.OAuth.PartnerTest.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.HttpOverrides;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.Configure<PartnerOAuthOptions>(builder.Configuration.GetSection("PartnerOAuth"));
-builder.Services.Configure<Microsoft.AspNetCore.Builder.ForwardedHeadersOptions>(options =>
+builder.Services.Configure<ClientCredentialsOptions>(
+    builder.Configuration.GetSection("ClientCredentials"));
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
 {
     options.ForwardedHeaders =
-        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedFor |
-        Microsoft.AspNetCore.HttpOverrides.ForwardedHeaders.XForwardedProto;
+        ForwardedHeaders.XForwardedFor |
+        ForwardedHeaders.XForwardedProto;
     options.KnownNetworks.Clear();
     options.KnownProxies.Clear();
 });
 
-builder.Services.AddSingleton<IConfigurationManager<OpenIdConnectConfiguration>>(sp =>
+var clientCredentials = builder.Configuration.GetSection("ClientCredentials").Get<ClientCredentialsOptions>()
+    ?? new ClientCredentialsOptions();
+
+builder.Services.AddAuthentication(options =>
 {
-    var oauth = builder.Configuration.GetSection("PartnerOAuth").Get<PartnerOAuthOptions>()
-                ?? new PartnerOAuthOptions();
+    options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+})
+.AddCookie(options =>
+{
+    options.Cookie.Name = "PartnerApp.Auth";
+    options.Cookie.HttpOnly = true;
+    options.LoginPath = "/";
+    options.ExpireTimeSpan = TimeSpan.FromHours(8);
+    options.SlidingExpiration = true;
+})
+.AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    options.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.RequireHttpsMetadata = true;
+    options.UsePkce = true;
 
-    var discoveryUri = !string.IsNullOrWhiteSpace(oauth.DiscoveryUri)
-        ? oauth.DiscoveryUri
-        : oauth.IdentityIssuerBaseUrl.TrimEnd('/') + "/.well-known/openid-configuration";
+    options.Scope.Clear();
+    options.Scope.Add("openid");
+    options.Scope.Add("profile");
 
-    var retriever = new OpenIdConnectConfigurationRetriever();
-    var http = new HttpDocumentRetriever { RequireHttps = false };
-    return new ConfigurationManager<OpenIdConnectConfiguration>(discoveryUri, retriever, http)
+    options.Authority = clientCredentials.Authority;
+    options.ClientId = clientCredentials.ClientId;
+    options.ClientSecret = clientCredentials.ClientSecret;
+
+    options.ResponseType = "code";
+    options.CallbackPath = "/signin-oidc";
+
+    options.SaveTokens = true;
+    options.GetClaimsFromUserInfoEndpoint = true;
+
+    options.NonceCookie.SameSite = SameSiteMode.Lax;
+    options.CorrelationCookie.SameSite = SameSiteMode.Lax;
+
+    options.Events.OnUserInformationReceived = context =>
     {
-        AutomaticRefreshInterval = TimeSpan.FromHours(24),
-        RefreshInterval = TimeSpan.FromMinutes(5)
+        PartnerOidcClaimMapping.ApplyUserInfoDocument(
+            context.Principal?.Identity as ClaimsIdentity,
+            context.User);
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnTokenValidated = context =>
+    {
+        if (context.Principal?.Identity is ClaimsIdentity identity &&
+            context.SecurityToken is JwtSecurityToken jwt)
+        {
+            PartnerOidcClaimMapping.ApplyIdTokenClaims(identity, jwt.Claims);
+        }
+
+        context.Properties!.IsPersistent = true;
+        context.Properties.ExpiresUtc = DateTimeOffset.UtcNow.AddHours(8);
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRedirectToIdentityProviderForSignOut = context =>
+    {
+        if (!string.IsNullOrWhiteSpace(clientCredentials.PostLogoutRedirectUri))
+        {
+            context.ProtocolMessage.PostLogoutRedirectUri = clientCredentials.PostLogoutRedirectUri;
+        }
+        return Task.CompletedTask;
+    };
+
+    options.Events.OnRemoteFailure = context =>
+    {
+        var failureMessage = context.Failure?.Message ?? string.Empty;
+        var redirect = failureMessage.Contains("access_denied", StringComparison.OrdinalIgnoreCase)
+            ? "/?denied=1"
+            : "/?ssoError=1";
+
+        context.Response.Redirect(redirect);
+        context.HandleResponse();
+        return Task.CompletedTask;
     };
 });
 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddSession(options =>
-{
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
-});
-
-builder.Services.AddHttpClient("identity", c =>
-{
-    c.DefaultRequestHeaders.Accept.Add(
-        new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-});
-
+builder.Services.AddAuthorization();
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
@@ -59,7 +116,7 @@ if (!app.Environment.IsDevelopment())
 app.UseForwardedHeaders();
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

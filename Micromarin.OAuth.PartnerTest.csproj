@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Identity tarafından RS256 ile imzalanan id_assertion JWT'sini doğrulamak için. -->
-    <PackageReference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.2.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="10.0.7" />
   </ItemGroup>
 
 </Project>
