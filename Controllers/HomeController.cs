@@ -59,7 +59,7 @@ public class HomeController : Controller
             return RedirectToAction(nameof(Profile));
         }
 
-        TempData["LoginError"] = "Kullanıcı adı veya şifre yanlış";
+        TempData["LoginError"] = "Invalid username or password.";
         return RedirectToAction(nameof(Index));
     }
 

@@ -1,7 +1,7 @@
 @model Micromarin.OAuth.PartnerTest.Models.UserProfileVm
 @{
     Layout = "~/Views/Shared/_LayoutAuth.cshtml";
-    ViewData["Title"] = "Profil";
+    ViewData["Title"] = "Profile";
 }
 
 <style>
@@ -164,47 +164,47 @@
         </div>
 
         <div class="profile-card__body">
-            <h1 class="profile-card__name">@(string.IsNullOrWhiteSpace(Model.FullName) ? "Kullanıcı" : Model.FullName)</h1>
+            <h1 class="profile-card__name">@(string.IsNullOrWhiteSpace(Model.FullName) ? "User" : Model.FullName)</h1>
             <p class="profile-card__company">@Model.CompanyName</p>
 
             <ul class="profile-card__details">
                 <li>
-                    <span class="label">Ad</span>
+                    <span class="label">First name</span>
                     <span class="value">@Model.FirstName</span>
                 </li>
                 <li>
-                    <span class="label">Soyad</span>
+                    <span class="label">Last name</span>
                     <span class="value">@Model.LastName</span>
                 </li>
                 @if (!string.IsNullOrWhiteSpace(Model.UserName))
                 {
                     <li>
-                        <span class="label">Kullanıcı adı</span>
+                        <span class="label">Username</span>
                         <span class="value">@Model.UserName</span>
                     </li>
                 }
                 <li>
-                    <span class="label">Şirket</span>
+                    <span class="label">Company</span>
                     <span class="value">@Model.CompanyName</span>
                 </li>
                 @if (!string.IsNullOrWhiteSpace(Model.CompanyTitle))
                 {
                     <li>
-                        <span class="label">Ünvan</span>
+                        <span class="label">Job title</span>
                         <span class="value">@Model.CompanyTitle</span>
                     </li>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.Email))
                 {
                     <li>
-                        <span class="label">E-posta</span>
+                        <span class="label">Email</span>
                         <span class="value">@Model.Email</span>
                     </li>
                 }
                 @if (!string.IsNullOrWhiteSpace(Model.PartnerSub))
                 {
                     <li>
-                        <span class="label" title="Micromarin tarafından partner'a özel üretilmiş opaque ID. AccountID GUID'i DEĞİLDİR; partner'lar arasında farklı değer alır.">Partner Sub</span>
+                        <span class="label" title="Opaque partner-specific subject issued by Micromarin. This is not the internal AccountID GUID; values differ per partner client.">Partner Sub</span>
                         <span class="value" style="font-family:monospace; font-size:12px;">@Model.PartnerSub</span>
                     </li>
                 }
@@ -212,11 +212,11 @@
 
             <div class="profile-card__actions">
                 <a class="btn btn-outline-primary-soft" href="/">
-                    <i class="fas fa-home me-1"></i> Ana sayfa
+                    <i class="fas fa-home me-1"></i> Home
                 </a>
                 <form asp-action="Logout" asp-controller="Home" method="post" class="d-inline" style="flex:1;">
                     <button type="submit" class="btn btn-danger-soft w-100">
-                        <i class="fas fa-sign-out-alt me-1"></i> Çıkış yap
+                        <i class="fas fa-sign-out-alt me-1"></i> Sign out
                     </button>
                 </form>
             </div>
